@@ -232,9 +232,14 @@ inline void GraphicalDisplayMenu::draw_item(display::Display *display, const dis
   display->print(bounds->x, bounds->y, this->font_, foreground_color, display::TextAlign::TOP_LEFT, label.c_str());
 }
 
-void GraphicalDisplayMenu::draw_item(const display_menu_base::MenuItem *item, const uint8_t row, const bool selected) {
-  ESP_LOGE(TAG, "draw_item(MenuItem *item, uint8_t row, bool selected) called. The graphical_display_menu specific "
-                "draw_item should be called.");
+// draw_item is altered to show background color in full line
+void GraphicalDisplayMenu::draw_item(display::Display *display, const display_menu_base::MenuItem *item,
+                                     const display::Rect *bounds, bool selected) {
+  if (selected) {
+    display->filled_rectangle(bounds->x, bounds->y, bounds->width, bounds->height, this->background_color_);
+  }
+  display->print(bounds->x + 1, bounds->y + 1, this->font_, this->foreground_color_, display::TextAlign::TOP_LEFT,
+                 item->get_text().c_str());
 }
 
 void GraphicalDisplayMenu::update() { this->on_redraw_callbacks_.call(); }
